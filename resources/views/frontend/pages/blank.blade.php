@@ -1,4 +1,4 @@
-@extends('backend.layouts.default_layout')
+@extends('frontend.layouts.default_layout')
 @section('title') Blank Page @parent @endsection
 
 @section('content')

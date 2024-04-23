@@ -10,8 +10,3 @@
 <script src="{{asset('assets/js/custom.js')}}"></script>
 <!-- overlayScrollbars -->
 <script src="{{asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
-<!-- ckeditor -->
-<script src="https://cdn.ckeditor.com/ckeditor5/19.0.0/classic/ckeditor.js"></script>
-
-<!-- Custom.js -->
-<script src="{{asset('assets/js/custom.js')}}"></script>
