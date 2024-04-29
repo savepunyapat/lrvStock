@@ -111,30 +111,33 @@
                 <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
             </div>
         </li>
-       <li class="nav-item dropdown user user-menu">
-        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-            <img src="{{asset('assets/dist/img/user2-160x160.jpg')}}" class="user-image img-circle elevation-2" alt="User Image">
-        </a>
-        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-            <li class="user-header bg-primary">
-                <img src="{{asset('assets/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
-                <p>
-                    Punyapat Lertsamrong
-                    <small>Member since Nov. 2012</small>
-                </p>
-            </li>
-            <!-- Menu Footer -->
-            <li class="user-footer">
-                <div class="row">
-                    <div class="col-md-6">
-                        <a href="#" class="btn btn-block btn-default btn-flat">Profile</a>
+        <li class="nav-item dropdown user user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                <img src="{{asset('assets/dist/img/user2-160x160.jpg')}}" class="user-image img-circle elevation-2" alt="User Image">
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <li class="user-header bg-primary">
+                    <img src="{{asset('assets/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+                    <p>
+                        Punyapat Lertsamrong
+                        <small>Member since Nov. 2012</small>
+                    </p>
+                </li>
+                <!-- Menu Footer -->
+                <li class="user-footer">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="#" class="btn btn-block btn-default btn-flat">Profile</a>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <form action="{{route('logout')}}" method="post">
+                                @csrf
+                                <button type='submit' class="btn btn-block btn-default btn-flat">Sign out</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="col-md-6 text-right">
-                        <a href="#" class="btn btn-block btn-default btn-flat">Sign out</a>
-                    </div>
-                </div>
-            </li>
-        </ul>
-       </li>
+                </li>
+            </ul>
+        </li>
     </ul>
 </nav>

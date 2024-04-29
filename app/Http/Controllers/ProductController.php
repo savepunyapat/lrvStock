@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Model\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\UploadedFile;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Throwable;
+
 class ProductController extends Controller
 {
     /**
@@ -13,8 +16,9 @@ class ProductController extends Controller
      */
     public function index()
     {
+        //print_r(config('global.global_var.pro_status')[0]);
         $products = Product::latest()->paginate(10);
-        return view('backend.pages.products.index',compact('products'))->with('i', (request()->input('page', 1) - 1) * 10) ;
+        return view('backend.pages.products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -47,23 +51,55 @@ class ProductController extends Controller
             'digits' => 'ฟิลด์ :attribute ต้องเป็นตัวเลขความยาว :digits หลัก',
             'unique' => 'รายการนี้มีอยู่แล้วในตาราง (ห้ามซ้ำ)'
         ];
-        $validator = Validator::make($request->all(), $rules,$messages);
+        $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
-        }else {
-            $productData = $request->all();
-            if ($request->hasFile('product_image')) {
-                $image = $request->file('product_image');
-                $imageName = uniqid() . '.' . $image->getClientOriginalExtension(); // Generate unique name
-                $image->storeAs('products', $imageName); // Move to 'products' folder
-                $productData['product_image'] = $imageName; // Update product data with image name
-            }else {
-                $productData['product_image'] = 'no-image.jpg'; // Default image
+        } else {
+            $product_data = array(
+                'product_name' => $request->product_name,
+                'product_detail' => $request->product_detail,
+                'product_barcode' => $request->product_barcode,
+                'product_qty' => $request->product_qty,
+                'product_price' => $request->product_price,
+                'product_category' => $request->product_category,
+                'product_status' => $request->product_status,
+                'created_at' => NOW(),
+                'updated_at' => NOW()
+            );
+
+            try {
+                $image = request()->file('product_image');
+
+                if (!empty($image)) {
+                    $file_name = "product_" . time() . "." . $image->getClientOriginalExtension();
+                    if ($image->getClientOriginalExtension() == "jpg" or $image->getClientOriginalExtension() == "png") {
+                        $manager = new ImageManager(new Driver());
+                        $imgWidth = 300;
+                        $folderupload = "assets/images/products";
+                        $path = $folderupload . "/" . $file_name;
+
+                        // upload to folder products
+                        $img = $manager->read($image->getRealPath());
+
+                        if ($img->width() > $imgWidth) {
+                            $img->resize($imgWidth, null, function ($constraint) {
+                                $constraint->aspectRatio();
+                            });
+                        }
+
+                        $img->save($path);
+                        $product_data['product_image'] = $file_name;
+                    } else {
+                        return redirect()->route('products.create')->withErrors($validator)->withInput()->with('status', '<div class="alert alert-danger">ไฟล์ภาพไม่รองรับ อนุญาติเฉพาะ .jpg และ .png</div>');
+                    }
+                }
+            } catch (Throwable $e) {
+                print_r($e->getMessage());
+                return false;
             }
-            Product::create($productData);
+            $status = Product::create($product_data);
             return redirect()->route('products.create')->with('success', 'เพิ่มข้อมูลสินค้าเรียบร้อยแล้ว');
         }
-        
     }
 
     /**
@@ -71,7 +107,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return view('backend.pages.products.show', compact('product'));
     }
 
     /**
@@ -79,7 +115,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return view('backend.pages.products.edit',compact('product'));
+        return view('backend.pages.products.edit', compact('product'));
     }
 
     /**
@@ -97,6 +133,6 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'ลบข้อมูลสินค้าเรียบร้อยแล้ว');    
+        return redirect()->route('products.index')->with('success', 'ลบข้อมูลสินค้าเรียบร้อยแล้ว');
     }
 }

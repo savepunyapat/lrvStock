@@ -47,6 +47,9 @@
                 <thead>
                     <tr>
                         <th style="width: 1%">#</th>
+                        <th style="width: 10%">
+                            image
+                        </th>
                         <th style="width: 20%">
                             Name
                         </th>
@@ -77,6 +80,9 @@
                             {{ ++$i }}
                         </td>
                         <td>
+                            <img alt="image" class="img-fluid" src="{{asset('assets/images/products')}}/{{$product->product_image}}">
+                        </td>
+                        <td>
                             <a>
                                {{  $product->product_name  }}
                             </a>
@@ -95,7 +101,7 @@
                             {{  $product->product_price  }}
                         </td>
                         <td> {{  $product->product_category  }}</td>
-                        <td>{{ $product->product_status }}</span></td>
+                        <td>{!! config('global.global_var.pro_status')[$product->product_status] !!}</span></td>
                         <td class="project-actions text-right">
 
                             <form action="{{route('products.destroy', $product->id) }}" method="POST">
